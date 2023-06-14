@@ -2,13 +2,17 @@ package br.com.carv.finance.model.entity;
 
 import java.io.Serial;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.format.annotation.DateTimeFormat.ISO;
 
 import br.com.carv.finance.model.GenericEntity;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Table(name = "tb_user")
@@ -41,6 +45,9 @@ public class User extends GenericEntity {
 	
 	@DateTimeFormat(iso = ISO.DATE_TIME)
 	private LocalDate birthDate;
+	
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE, CascadeType.PERSIST})
+	private List<AccountingEntry> accountingEntrys;
 	
 	public User() { }
 	
@@ -126,6 +133,14 @@ public class User extends GenericEntity {
 
 	public void setBirthDate(LocalDate birthDate) {
 		this.birthDate = birthDate;
+	}
+	
+	public List<AccountingEntry> getAccountingEntrys() {
+		return accountingEntrys;
+	}
+	
+	public void setAccountingEntrys(List<AccountingEntry> accountingEntrys) {
+		this.accountingEntrys = accountingEntrys;
 	}
 	
 }

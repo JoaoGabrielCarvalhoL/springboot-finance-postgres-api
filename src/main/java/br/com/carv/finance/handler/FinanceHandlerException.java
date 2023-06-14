@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import br.com.carv.finance.exception.ResourceAlreadyUsedException;
 import br.com.carv.finance.exception.ResourceNotFoundException;
 
 @ControllerAdvice
@@ -31,9 +32,17 @@ public class FinanceHandlerException extends ResponseEntityExceptionHandler {
 	}
 	
 	@ExceptionHandler(ResourceNotFoundException.class)
-	public ResponseEntity<ExceptionResponse> handleAllException(ResourceNotFoundException exception) {
+	public ResponseEntity<ExceptionResponse> handleResourceNotFoundException(ResourceNotFoundException exception) {
 		ExceptionResponse exceptionResponse = 
-				new ExceptionResponse("Internal Server Error", 
+				new ExceptionResponse("Bad Request", 
+						HttpStatus.BAD_REQUEST.value(), exception.getMessage(), LocalDateTime.now());
+		return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(ResourceAlreadyUsedException.class)
+	public ResponseEntity<ExceptionResponse> handleResourceAlreadyUsedException(ResourceAlreadyUsedException exception) {
+		ExceptionResponse exceptionResponse = 
+				new ExceptionResponse("Bad Request", 
 						HttpStatus.BAD_REQUEST.value(), exception.getMessage(), LocalDateTime.now());
 		return new ResponseEntity<ExceptionResponse>(exceptionResponse, HttpStatus.BAD_REQUEST);
 	}
